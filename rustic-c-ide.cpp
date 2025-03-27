@@ -233,11 +233,11 @@ int main(int argc, char* argv[]) {
     std::fstream rusticcfile(filename.c_str());
 
     // User message and input
-    std::cout << "The rustic c language definition is c++ with minor changes... " << "\n" 
-        << "it goes as follows: " << "\n"
-        << "int->integer" << "\n"
-        << "float->decimal" << "\n"
-        << "--------------" << std::endl;
+    std::cout << "The Rustic C language is just c++ with minor changes." << "\n" 
+        << "It goes as follows: " << "\n"
+        << "int = integer, and float = decimal." << "\n"
+        << "Romantic coding!" << "\n"
+        << "----------------" << std::endl;
 
     std::cout << "Write code on the line below... " << "\n" << ": ";
 
