@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
     std::string codeinput;
 
     // User input for filename
-    std::cout << "Enter output file name: ";
+    std::cout << "Enter output file name with (.cpp): ";
     cin >> filename;
 
     std::fstream rusticcfile(filename.c_str());
@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
     std::cout << "The Rustic C language is just c++ with minor changes." << "\n" 
         << "It goes as follows: " << "\n"
         << "int = integer, and float = decimal." << "\n"
-        << "Romantic coding!" << "\n"
+        << "Rustic coding!" << "\n"
         << "----------------" << std::endl;
 
     std::cout << "Write code on the line below... " << "\n" << ": ";
