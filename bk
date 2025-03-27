@@ -1,0 +1,24 @@
+ // Program variables
+ std::string filename;
+ std::string codeinput;
+
+ // User message and input
+ std::cout << "Enter file name for creation: ";
+ cin >> filename;
+
+ // Create file
+ std::fstream rusticcfile(filename.c_str());
+
+ // User message and input
+ std::cout << "The rustic c language definition is as follows: " << "\n"
+     << "int->integer" << "\n"
+     << "float->decimal" << "\n"
+     << "--------------" << std::endl;
+
+ std::cout << "Write code on the line below... " << "\n" << ": ";
+ 
+ cin.ignore();
+ std::getline(std::cin, codeinput);
+
+ // Write to file
+ rusticcfile << codeinput;

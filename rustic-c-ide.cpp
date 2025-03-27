@@ -1,52 +1,38 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <string>
 using namespace std;
 
+// パソコンいいこと！
+// Can someone share this code to bisqwit for him to read?
+
 union pools {
 
-    struct dfkeys {
-    public:
-        char dk_space = ' ';
-        std::string dk_space2 = " ";
-        char dk_nullterminate = '\0';
-        std::string dk_nullterminate2 = "\0";
-        char dk_semicolon = ';';
-        std::string dk_semicolon2 = ";";
-        char dk_newline = '\n';
-        std::string dk_newline2 = "\n";
-        char dk_tab = '\t';
-        std::string dk_tab2 = "\t";
+    struct charpool {
+        public:
+            std::string charpool[64][64];
     };
 
-    struct charpools {
-    public:
-        std::string charpool[32][32];
+    struct keywordpool {
+        public:
+            std::string keywordpool[64][64];
     };
 
-    struct keywordpools {
-    public:
-        std::string keywordpool[32][32];
-        int compiledlength;
-    };
-
-    struct compiledpool {
-    public:
-        std::string compiledpool[32][32];
-        std::string compiledstring[32][32];
+    struct compiledobject {
+        public:
+            std::string compiledstring[64][64];
     };
 };
 
-pools::charpools parsestring(std::string codetobeparsed) {
+pools::charpool parsestring(std::string codetobeparsed) {
 
     // Parser / Lexical analyzer
     // Parser: a computer program that breaks down text into recognized strings of characters for further analysis.
 
     // Create object for accessing pools
-    pools::charpools charPool;
-
-    pools::dfkeys dfkeys;
+    pools::charpool charPool;
 
     int iterator = 0;       // Iterator for scanning and/or counting
     int wordindex = 0;      // Iterator for scanning words
@@ -55,58 +41,110 @@ pools::charpools parsestring(std::string codetobeparsed) {
     // Create parser for dividing string into keywords and storing them in an array.
 
     // While codetobeparsed[iterator] doesn't equal nullterminate character ('\0')
-    while (codetobeparsed[iterator] != dfkeys.dk_nullterminate) {
+    for (iterator = 0; codetobeparsed[iterator] != '\0'; iterator++)
+    {
         // Check for space bar, if we get space bar, store it in charpool.
-        if (codetobeparsed[iterator] == dfkeys.dk_space) {
-            // Checkpoint! We know how to get a word!, now if we get space key, we store it and wordindex++! and do the keyscanning once again...
-            characterindex = 0;
-            wordindex++;
-            charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
-            wordindex++;
-            // increment the character index after skipping space so, that when we scan the next char we dont have the space.
-            characterindex = 0; // Reset this to characterindex = 0
-            // Iterate as long as the char is not null terminate character or space and not at the EOF and set the chars..
-            while (codetobeparsed[iterator] != dfkeys.dk_nullterminate && codetobeparsed[iterator] != dfkeys.dk_space) {
-                // Set the keys
-                characterindex = 0;
-                iterator++;
-                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
-            }
-        }
-        // Continue if we don't have space
-        if (codetobeparsed[iterator] != dfkeys.dk_space) {
 
+        if (codetobeparsed[iterator] != '\0')
+        {
             // If we get semicolon, store it in charpool.
-            if (codetobeparsed[iterator] == dfkeys.dk_semicolon) {
-                // We encountered a semicolon; line ending, special character. store it in the register after wordindex++
+            switch (codetobeparsed[iterator]) {
+            case '(':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                break;
+            case ')':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                break;
+            case '{':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                wordindex++;
+                break;
+            case '}':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                break;
+            case '[':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                break;
+            case ']':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                break;
+            case ';':
+                // wordindex++;
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                wordindex++;
+                break;
+            case ',':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                break;
+            case '\n':
+                // wordindex++;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
                 wordindex++;
                 characterindex = 0;
+                break;
+            case '\t':
                 charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
-            }
-            else {
-                // If character is not a semicolon, go to the next character in the array and set the key
+                wordindex++;
+                characterindex = 0;
+                break;
+            case ' ':
+                characterindex = 0;
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                wordindex++;
+                break;
+            default:
+                // If the previous checks did not complete, go to the next character in the array and set the key
                 // just set the character as usual.
                 charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                characterindex++;
+                break;
             }
-            // Increment the caracterindex so it reads the next character.
-            characterindex++;
+
+            // After setting the key, check for if next character is special key, and wordindex++!
+            if (codetobeparsed[iterator+1] == '('
+                || codetobeparsed[iterator+1] == ')'
+                || codetobeparsed[iterator+1] == '{'
+                || codetobeparsed[iterator+1] == '}'
+                || codetobeparsed[iterator+1] == '['
+                || codetobeparsed[iterator+1] == ']'
+                || codetobeparsed[iterator+1] == ';'
+                || codetobeparsed[iterator+1] == ','
+                || codetobeparsed[iterator+1] == ' ')
+            {  
+                characterindex = 0;
+                // wordindex++;
+                // charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                // Note to self: if we have encountered parsing error probably updated wordindex incorrectly.
+                if (codetobeparsed[iterator] != ' ' && codetobeparsed[iterator] != '\n' && codetobeparsed[iterator] != '{' && codetobeparsed[iterator] != ';')
+                {
+                    wordindex++;
+                }
+            } else if (codetobeparsed[iterator+1] == ' ') {
+                charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                wordindex++;
+                // characterindex = 0;
+            }
         }
-        // Increment the iterator to scan the next word.
-        iterator++;
+
     }
 
     return charPool;
 }
 
-pools::keywordpools lexobject(pools::charpools parsedobject, std::string rusticcline) {
+pools::keywordpool lexobject(pools::charpool parsedobject) {
 
     // Lexer: categorize keywords and define them as types, identifiers, names, operators, values and special symbols.
 
     // Create object for variable pool
-    pools::keywordpools keywordPool;
-
-    // Define definedkeys object
-    pools::dfkeys dfkeys;
+    pools::keywordpool keywordPool;
 
     // Create variables for iterating...
     int iterator = 0;        // Iterator for loops, counts the cycles
@@ -114,18 +152,12 @@ pools::keywordpools lexobject(pools::charpools parsedobject, std::string rusticc
     int worditerator = 0;        // Word index iterator #2 (fixed the whole program)
     int characterindex = 0;        // Character index iterator
 
-    // Variable for string length
-    int codelength = rusticcline.length();
-
-    // Define variable for code length
-    keywordPool.compiledlength = codelength;
-
     // Counter for words in charpool 
     int wordcounter = 0;
 
     // Count all words in charpool
     // For as long as charpool[iterator][0] != "\0", wordcounter++ and iterator++;
-    for (int iterator = 0; parsedobject.charpool[iterator][0] != dfkeys.dk_nullterminate2; iterator++) {
+    for (int iterator = 0; parsedobject.charpool[iterator][0] != "\0"; iterator++) {
         wordcounter++;
     }
 
@@ -135,7 +167,7 @@ pools::keywordpools lexobject(pools::charpools parsedobject, std::string rusticc
 
         // Count the length of every word with characterindex, until ntchar2 found...
         // and set the keys, this sets the integer key perfectly, next we need to check for space...
-        for (worditerator = 0; parsedobject.charpool[wordindex][worditerator] != dfkeys.dk_nullterminate2; worditerator++) {
+        for (worditerator = 0; parsedobject.charpool[wordindex][worditerator] != "\0"; worditerator++) {
             keywordPool.keywordpool[wordindex][0] += parsedobject.charpool[wordindex][characterindex];
             characterindex++;
         }
@@ -145,9 +177,9 @@ pools::keywordpools lexobject(pools::charpools parsedobject, std::string rusticc
         characterindex = 0;
 
         // If we get a space, wordindex++ and reset characterindex and go for the next word
-        if (parsedobject.charpool[wordindex][characterindex] == dfkeys.dk_space2) {
+        if (parsedobject.charpool[wordindex][characterindex] == " ") {
             // Here we can decide if we want to include spaces or not
-            keywordPool.keywordpool[wordindex][0] = dfkeys.dk_space2; // Comment out this line to not include spaces
+            keywordPool.keywordpool[wordindex][0] = " "; // Comment out this line to not include spaces
             // Increment wordindex, for getting the next word since space is only 1-letter.
             wordindex++;
             // After setting the key, just reset characterindex for the next character.
@@ -158,20 +190,17 @@ pools::keywordpools lexobject(pools::charpools parsedobject, std::string rusticc
     return keywordPool;
 }
 
-pools::compiledpool compile(pools::keywordpools lexedobject) {
+pools::compiledobject compile(pools::keywordpool lexedobject) {
 
     // Count the number of arrays/words in struct
     int wordindex = 0;   // Create variable for iterating through wordindexes
 
     // Define combiledobj object
-    pools::compiledpool compiledobj;
-
-    // Define defined keys object
-    pools::dfkeys dfkeys;
+    pools::compiledobject compiledobj;
 
     // For as long as keywordpool[wordindex][0] != dk_ntchar
     // check if data types found and convert them
-    for (int iterator = 0; lexedobject.keywordpool[iterator][0] != dfkeys.dk_nullterminate2; iterator++) {
+    for (int iterator = 0; lexedobject.keywordpool[iterator][0] != "\0"; iterator++) {
 
         if (lexedobject.keywordpool[iterator][0] == "integer") {
             lexedobject.keywordpool[iterator][0] = "int";
@@ -183,22 +212,12 @@ pools::compiledpool compile(pools::keywordpools lexedobject) {
     }
 
     // combine the keywords into an compiledpool array
-    for (int iterator = 0; lexedobject.keywordpool[iterator][0] != dfkeys.dk_nullterminate2; iterator++) {
-        compiledobj.compiledpool[iterator][0] += lexedobject.keywordpool[iterator][0];
-    }
-
-    // Now combine the elements from the array to compiledobj.compiledstring[0];
-    for (int iterator = 0; compiledobj.compiledpool[iterator][0] != dfkeys.dk_nullterminate2; iterator++) {
-        compiledobj.compiledstring[0][0] += compiledobj.compiledpool[iterator][0];
+    for (int iterator = 0; lexedobject.keywordpool[iterator][0] != "\0"; iterator++) {
+        compiledobj.compiledstring[0][0] += lexedobject.keywordpool[iterator][0];
     }
 
     // Return the compiled object
     return compiledobj;
-}
-
-std::string returnstring(pools::compiledpool compiledobj) {
-    std::string returnstring = compiledobj.compiledstring[0][0];
-    return returnstring;
 }
 
 int main(int argc, char* argv[]) {
@@ -207,91 +226,74 @@ int main(int argc, char* argv[]) {
     std::string filename;
     std::string codeinput;
 
-    // User message and input
-    std::cout << "Enter file name for creation: ";
+    // User input for filename
+    std::cout << "Enter output file name: ";
     cin >> filename;
 
-    // Create file
     std::fstream rusticcfile(filename.c_str());
 
     // User message and input
-    std::cout << "The rustic c language definition is as follows: " << "\n"
+    std::cout << "The rustic c language definition is c++ with minor changes... " << "\n" 
+        << "it goes as follows: " << "\n"
         << "int->integer" << "\n"
         << "float->decimal" << "\n"
         << "--------------" << std::endl;
 
     std::cout << "Write code on the line below... " << "\n" << ": ";
-    
-    cin.ignore();
-    std::getline(std::cin, codeinput);
 
-    // Write to file
-    rusticcfile << codeinput;
-
-    // Close the file
-    // rusticcfile.close()
-
-    // Read file
-    std::string rusticcline;
-    std::string linearray[64];
-
-    // Parse file to linearray
     int linecount = 0;
 
-    // Get the line count
-    while (getline(rusticcfile, rusticcline)) {
-        // Check to see if rusticcfile is open
-        if (rusticcfile) {
-            // Set the linearray with lineindex to the line
-            // linearray[linecount] = rusticcline;
-            linecount++;
+    for (int iterator = 0; iterator <= linecount; iterator++) {
+        if (iterator == linecount) {
+            rusticcfile.clear();
+            rusticcfile.seekg(0);
+            cin.ignore();
+            std::getline(cin, codeinput);
         }
     }
+
+    // std::cin >> codeinput;
+
+    // Create file
+    
+    rusticcfile.open(filename.c_str());
+    rusticcfile << std::string(codeinput);
+    rusticcfile.close();
+
+    // Write to file
+
+    // Read file
+    std::string linearray[64];
 
     // We got the lines... Now we need to combine them
 
     // std::string concatenatedcode;
 
-    //  For every line in the linearray
+    // For every line in the linearray
     // for (int lineiterator = 0; lineiterator < linecount; lineiterator++) {
-    //    // Set each line into concatenatedcode
-    //    concatenatedcode += linearray[lineiterator];
-    //}
+    //     // Set each line into concatenatedcode
+    //     concatenatedcode += linearray[lineiterator];
+    // }
 
-    // Example print
-    // std::cout << linearray[0] << "\n" << linearray[1] << "\n" << linearray[2] << "\n" << linearray[3] << "\n";
+    std::cout << codeinput << std::endl;
 
-    // std::cout << concatenatedcode << std::endl;
+    // Pass the source to the parsestring function and return parsed object
+    pools::charpool parsedobject = parsestring(codeinput);
 
-    // std::cout << "Combined string: " << linearray[0] << "\n" << linearray[1] << "\n" << linearray[2] << "\n" << linearray[3];
-
-    // The language is basically just c++, but "int" is "integer" and "float" is "decimal".
-
-    // Pass the source to the parse code function and include it in the parsedobject object
-    pools::charpools parsedobject = parsestring(codeinput);
-
-    // PARSER DONE! we've now successfully parsed the string and
-    pools::keywordpools lexedobject = lexobject(parsedobject, rusticcline);
-
-    // LEXER DONE! now we need to make it translate (compile) the words to c++ for example integer -> int & decimal -> float.
+    // Pass the parsed object
+    pools::keywordpool lexedobject = lexobject(parsedobject);
 
     // Print compiling
     std::cout << "Compiling..." << std::endl;
 
     // Compiler
-    pools::compiledpool compiledobj = compile(lexedobject);
-
-    // Print rustic-c string
-    // std::cout << "rustic c code:      " << rusticcline << std::endl;
-
-    // Print the compiled code
-    // std::cout << "translated c++ code:  " << compiledobj.compiledstring[0][0] << std::endl;
+    pools::compiledobject compiledobj = compile(lexedobject);
 
     // Create file
-    std::ofstream cppfile("compiledcode.cpp");
+    std::ofstream cppfile(filename.c_str());
 
     // Print writing to file
-    std::cout << "writing to file compiledcode.cpp..." << std::endl;
+    std::cout << "Writing to:" << filename << std::endl;
 
     // Write to file
     cppfile << compiledobj.compiledstring[0][0];
@@ -302,6 +304,6 @@ int main(int argc, char* argv[]) {
     // Pause
     system("pause");
 
-    // return the exit code, (you'll exit the matrix if you input 420 lol)... shushh...     
+    // return the exit code, (you'll exit the matrix if you code well!)     
     return 0;
 }
