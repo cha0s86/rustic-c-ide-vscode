@@ -257,18 +257,25 @@ int main(int argc, char* argv[]) {
     cin.seekg(0);
 
     for (int iterator = 0; rusticcline != "\x18"; iterator++) {
-        if (iterator == linelimit-1) {
-            getline(cin, rusticcline);
-            std::cout << ": ";
-            linearray[0] += rusticcline;
-            linecount++;
+        
+        if (rusticcline != "\x18") {
+            if (iterator == linelimit-1) {
+                linearray[0] += rusticcline;
+            } else {
+                std::cout << ": ";
+                getline(cin, rusticcline, '\n');
+                if (rusticcline == "\x18") {
+                    std::cout << "Entered CTRL+X. Exiting..." << std::endl;
+                } else {
+                    if (rusticcline == "\x18") {
+                        linearray[0] += rusticcline;
+                        linecount++;
+                    } else {
+                        linearray[0] += rusticcline + "\n";
+                    }
+                }
+            }
         }
-        else if (iterator < linelimit-1) {
-            std::cout << ": ";
-            getline(cin, rusticcline);
-            linearray[0] += rusticcline + "\n";
-            linecount++;
-        } 
     }
 
     // std::cout << linearray[0] << std::endl;
