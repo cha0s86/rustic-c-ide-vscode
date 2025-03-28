@@ -243,9 +243,9 @@ int main(int argc, char* argv[]) {
         << "It goes as follows: " << "\n"
         << "int = integer, and float = decimal." << "\n"
         << "Rustic coding!" << "\n"
-        << "----------------" << std::endl;
-
-    std::cout << "Write code on the line below... " << "\n";
+        << "----------------" << "\n"
+        << "Write code on the line below this one..." << "\n" 
+        << "Press CTRL+X on a new line to compile and write!" << "\n";
 
     std::string rusticcline;
     std::string linearray[1];
@@ -256,20 +256,22 @@ int main(int argc, char* argv[]) {
     cin.clear();
     cin.seekg(0);
 
-    for (int iterator = 0; !GetAsyncKeyState(VK_END); iterator++) {
+    for (int iterator = 0; rusticcline != "\x18"; iterator++) {
         if (iterator == linelimit-1) {
             getline(cin, rusticcline);
+            std::cout << ": ";
             linearray[0] += rusticcline;
             linecount++;
         }
         else if (iterator < linelimit-1) {
+            std::cout << ": ";
             getline(cin, rusticcline);
             linearray[0] += rusticcline + "\n";
             linecount++;
-        }
+        } 
     }
 
-    std::cout << linearray[0] << std::endl;
+    // std::cout << linearray[0] << std::endl;
 
     // Pass the source to the parsestring function and return parsed object
     pools::charpool parsedobject = parsestring(linearray[0]);
