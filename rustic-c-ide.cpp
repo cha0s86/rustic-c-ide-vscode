@@ -239,12 +239,8 @@ int main(int argc, char* argv[]) {
         << "Rustic coding!" << "\n"
         << "----------------" << std::endl;
 
-    std::cout << "Write code on the line below... " << "\n" << ": ";
-
-    cin.ignore();
-    std::getline(cin, codeinput);
-
-    // Create file for codeinput
+    std::cout << "Write code on the line below... " << "\n";
+    std::cout << "Press END to exit... " << "\n";
 
     int linecount = 0;
 
@@ -252,16 +248,16 @@ int main(int argc, char* argv[]) {
 
     bool running = true;
 
-    // Create file
-    for (linecount; running == true; linecount++)
-    {   std::cout << ": ";
-        while (!GetAsyncKeyState(VK_DELETE))
-        {
-            std::getline(cin, codeinput);
-            linearray[linecount] = codeinput;
-        }
+    int iterator;
 
-        running = false;
+    // Create file
+    for (int iterator = 0; GetAsyncKeyState(VK_END); iterator++) {
+        if (codeinput.empty()) {
+            break;
+        }
+        std::getline(cin, codeinput);
+        cin.ignore();
+        linearray[iterator] = codeinput;
     }
 
     std::string concatenatedcode;
