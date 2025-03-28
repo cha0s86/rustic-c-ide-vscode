@@ -1,0 +1,1 @@
+g++ -o /build/rustic-c-ide.exe rustic-c-ide.cpp
