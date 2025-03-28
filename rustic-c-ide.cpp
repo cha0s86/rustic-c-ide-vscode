@@ -263,13 +263,15 @@ int main(int argc, char* argv[]) {
                 linearray[0] += rusticcline;
             } else {
                 std::cout << ": ";
-                getline(cin, rusticcline, '\n');
+                getline(cin, rusticcline, '\x18');
                 if (rusticcline == "\x18") {
                     std::cout << "Entered CTRL+X. Exiting..." << std::endl;
                 } else {
                     if (rusticcline == "\x18") {
                         linearray[0] += rusticcline;
                         linecount++;
+                    } else if (rusticcline == "\n") {
+                        
                     } else {
                         linearray[0] += rusticcline + "\n";
                     }
