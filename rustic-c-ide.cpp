@@ -1,7 +1,6 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <string>
 using namespace std;
 
@@ -65,14 +64,17 @@ pools::charpool parsestring(std::string codetobeparsed) {
             case '}':
                 characterindex = 0;
                 charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                wordindex++;
                 break;
             case '[':
                 characterindex = 0;
                 charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                wordindex++;
                 break;
             case ']':
                 characterindex = 0;
                 charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
+                wordindex++;
                 break;
             case ';':
                 // wordindex++;
@@ -108,7 +110,8 @@ pools::charpool parsestring(std::string codetobeparsed) {
                 break;
             }
 
-            // After setting the key, check for if next character is special key, and wordindex++!
+            // If the previous character was a special character, we're not dealing with a multichar word,
+            // if we got a special character incoming, characterindex = 0 and deal with it!
             if (codetobeparsed[iterator+1] == '('
                 || codetobeparsed[iterator+1] == ')'
                 || codetobeparsed[iterator+1] == '{'
@@ -117,13 +120,19 @@ pools::charpool parsestring(std::string codetobeparsed) {
                 || codetobeparsed[iterator+1] == ']'
                 || codetobeparsed[iterator+1] == ';'
                 || codetobeparsed[iterator+1] == ','
+                || codetobeparsed[iterator+1] == '\n'
+                || codetobeparsed[iterator+1] == '\t'
                 || codetobeparsed[iterator+1] == ' ')
             {  
                 characterindex = 0;
                 // wordindex++;
                 // charPool.charpool[wordindex][characterindex] = codetobeparsed[iterator];
-                // Note to self: if we have encountered parsing error probably updated wordindex incorrectly.
-                if (codetobeparsed[iterator] != ' ' && codetobeparsed[iterator] != '\n' && codetobeparsed[iterator] != '{' && codetobeparsed[iterator] != ';')
+                // If the current character is special character AND the next one is one also.
+                if (codetobeparsed[iterator] != ' '
+                    && codetobeparsed[iterator] != '{'
+                    && codetobeparsed[iterator] != '}'
+                    && codetobeparsed[iterator] != ';'
+                    && codetobeparsed[iterator] != '\n')
                 {
                     wordindex++;
                 }
@@ -224,13 +233,10 @@ int main(int argc, char* argv[]) {
 
     // Program variables
     std::string filename;
-    std::string codeinput;
 
     // User input for filename
     std::cout << "Enter output file name with (.cpp): ";
     cin >> filename;
-
-    
 
     // User message and input
     std::cout << "The Rustic C language is just c++ with minor changes." << "\n"  
@@ -242,35 +248,32 @@ int main(int argc, char* argv[]) {
     std::cout << "Write code on the line below... " << "\n";
     std::cout << "Press END to exit... " << "\n";
 
-    int linecount = 0;
+    std::string rusticcline;
+    std::string linearray[1];
+    int lineiterator;
+    int linelimit = 128;
+    int linecount;
 
-    std::string linearray[256];
+    cin.clear();
+    cin.seekg(0);
 
-    bool running = true;
-
-    int iterator;
-
-    // Create file
-    for (int iterator = 0; GetAsyncKeyState(VK_END); iterator++) {
-        if (codeinput.empty()) {
-            break;
+    for (int iterator = 0; !GetAsyncKeyState(VK_END); iterator++) {
+        if (iterator == linelimit-1) {
+            getline(cin, rusticcline);
+            linearray[0] += rusticcline;
+            linecount++;
         }
-        std::getline(cin, codeinput);
-        cin.ignore();
-        linearray[iterator] = codeinput;
+        else if (iterator < linelimit-1) {
+            getline(cin, rusticcline);
+            linearray[0] += rusticcline + "\n";
+            linecount++;
+        }
     }
 
-    std::string concatenatedcode;
-
-    for (int lineiterator = 0; lineiterator < linecount; lineiterator++) {
-        // Set each line into concatenatedcode
-        concatenatedcode += linearray[lineiterator];
-    }
-
-    std::cout << concatenatedcode << std::endl;
+    std::cout << linearray[0] << std::endl;
 
     // Pass the source to the parsestring function and return parsed object
-    pools::charpool parsedobject = parsestring(codeinput);
+    pools::charpool parsedobject = parsestring(linearray[0]);
 
     // Pass the parsed object
     pools::keywordpool lexedobject = lexobject(parsedobject);
@@ -296,6 +299,6 @@ int main(int argc, char* argv[]) {
     // Pause
     system("pause");
 
-    // return the exit code, (you'll exit the matrix if you code well!)     
+    // return the exit code and exit program 
     return 0;
 }
