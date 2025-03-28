@@ -246,7 +246,6 @@ int main(int argc, char* argv[]) {
         << "----------------" << std::endl;
 
     std::cout << "Write code on the line below... " << "\n";
-    std::cout << "Press END to exit... " << "\n";
 
     std::string rusticcline;
     std::string linearray[1];
