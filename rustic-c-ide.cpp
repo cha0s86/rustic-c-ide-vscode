@@ -230,10 +230,10 @@ int main(int argc, char* argv[]) {
     std::cout << "Enter output file name with (.cpp): ";
     cin >> filename;
 
-    std::fstream rusticcfile(filename.c_str());
+    
 
     // User message and input
-    std::cout << "The Rustic C language is just c++ with minor changes." << "\n" 
+    std::cout << "The Rustic C language is just c++ with minor changes." << "\n"  
         << "It goes as follows: " << "\n"
         << "int = integer, and float = decimal." << "\n"
         << "Rustic coding!" << "\n"
@@ -241,41 +241,37 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Write code on the line below... " << "\n" << ": ";
 
+    cin.ignore();
+    std::getline(cin, codeinput);
+
+    // Create file for codeinput
+
     int linecount = 0;
 
-    for (int iterator = 0; iterator <= linecount; iterator++) {
-        if (iterator == linecount) {
-            rusticcfile.clear();
-            rusticcfile.seekg(0);
-            cin.ignore();
-            std::getline(cin, codeinput);
-        }
-    }
+    std::string linearray[256];
 
-    // std::cin >> codeinput;
+    bool running = true;
 
     // Create file
-    
-    rusticcfile.open(filename.c_str());
-    rusticcfile << std::string(codeinput);
-    rusticcfile.close();
+    for (linecount; running == true; linecount++)
+    {   std::cout << ": ";
+        while (!GetAsyncKeyState(VK_DELETE))
+        {
+            std::getline(cin, codeinput);
+            linearray[linecount] = codeinput;
+        }
 
-    // Write to file
+        running = false;
+    }
 
-    // Read file
-    std::string linearray[64];
+    std::string concatenatedcode;
 
-    // We got the lines... Now we need to combine them
+    for (int lineiterator = 0; lineiterator < linecount; lineiterator++) {
+        // Set each line into concatenatedcode
+        concatenatedcode += linearray[lineiterator];
+    }
 
-    // std::string concatenatedcode;
-
-    // For every line in the linearray
-    // for (int lineiterator = 0; lineiterator < linecount; lineiterator++) {
-    //     // Set each line into concatenatedcode
-    //     concatenatedcode += linearray[lineiterator];
-    // }
-
-    std::cout << codeinput << std::endl;
+    std::cout << concatenatedcode << std::endl;
 
     // Pass the source to the parsestring function and return parsed object
     pools::charpool parsedobject = parsestring(codeinput);
