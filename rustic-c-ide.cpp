@@ -268,8 +268,8 @@ int main(int argc, char* argv[]) {
                     std::cout << "Entered CTRL+X. Exiting..." << std::endl;
                 } else {
                     if (rusticcline == "\x18") {
-                        linearray[0] += rusticcline;
-                        linecount++;
+                        //linearray[0] += rusticcline;
+                        //linecount++;
                     } else {
                         linearray[0] += rusticcline + "\n";
                     }
