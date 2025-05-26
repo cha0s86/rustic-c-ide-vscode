@@ -4,6 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <thread>
+#include <chrono>
+#include <time.h>
 #include "rustic-c-compiler.h"
 using namespace std;
 
@@ -174,6 +177,7 @@ int main(int argc, char* argv[]) {
     // User input for filename
     std::cout << "Enter output file name with (.cpp): ";
     cin >> filename;
+    cin.ignore();
 
     // User message and input
     std::cout << "The Rustic C language is just c++ with minor changes." << "\n"  
@@ -190,8 +194,8 @@ int main(int argc, char* argv[]) {
     int linelimit = 128;
     int linecount;
 
-    cin.clear();
-    cin.seekg(0);
+    // cin.clear();
+    // cin.seekg(0);
 
     for (int iterator = 0; rusticcline != "\x18"; iterator++) {
         
@@ -200,8 +204,9 @@ int main(int argc, char* argv[]) {
                 linearray[0] += rusticcline;
             } else {
                 std::cout << ": ";
-                getline(cin, rusticcline);
-                if (rusticcline == "\x18") {
+		getline(cin, rusticcline);
+		// std::cin >> ws >> rusticcline;
+		if (rusticcline == "\x18") {
                     std::cout << "Entered CTRL+X. Exiting..." << std::endl;
                 } else {
                     if (rusticcline == "\x18") {
